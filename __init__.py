@@ -23,7 +23,7 @@ bl_info = {
     "author" : "IceSandwich",
     "description" : "A simple camera switcher for blender",
     "blender" : (3, 0, 0),
-    "version" : (0, 0, 1),
+    "version" : (0, 0, 2),
     "location" : "View3D > Properties > Camera Switcher",
     "warning" : "This addon is still in develop. Use at your own risk.",
     "category" : "3D View",
@@ -45,11 +45,15 @@ def register():
         if hasattr(cls, 'setupProperty'):
             cls.setupProperty(True)
 
-    if load_post not in bpy.app.handlers.load_post:
-        bpy.app.handlers.load_post.append(load_post)
+    if load_post in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(load_post)
+    bpy.app.handlers.load_post.append(load_post)
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
         if hasattr(cls, 'setupProperty'):
             cls.setupProperty(False)
+    
+    if load_post in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(load_post)
