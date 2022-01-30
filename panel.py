@@ -17,8 +17,9 @@ class ICECS_PT_CameraManager(bpy.types.Panel):
 
         layout.separator()
 
-        for camera in [ x.name for x in context.blend_data.objects if x.type == 'CAMERA' ]:
-            layout.operator("icecs.switchto", text=camera, icon="OUTLINER_OB_CAMERA").cameraName = camera
+        for x in context.blend_data.objects:
+            if x.type == 'CAMERA':
+                layout.operator("icecs.switchto", text=x.name, icon="OUTLINER_OB_CAMERA").cameraName = x.name
 
 class ICECS_PT_CameraQuickOperation(bpy.types.Panel):
     bl_label = "Camera Quick Operation"
@@ -34,10 +35,13 @@ class ICECS_PT_CameraQuickOperation(bpy.types.Panel):
         layout.prop(context.space_data, "lock_camera", toggle=1, icon="DECORATE_LOCKED")
         layout.separator()
 
-        if len([ x.spaces[0].region_3d.view_perspective for x in context.screen.areas if x.type == 'VIEW_3D' and x.spaces[0].region_3d and x.spaces[0].region_3d.view_perspective == 'CAMERA' ]) > 0:
-            layout.prop(context.scene.camera.data, "lens")
-            layout.prop(context.scene.camera.data.background_images[0], "alpha")
-            layout.prop(context.scene.camera.data.background_images[0], "display_depth")
+        area = context.area
+        if area.type == 'VIEW_3D' and area.spaces[0].region_3d and area.spaces[0].region_3d.view_perspective == 'CAMERA':
+            camera = context.scene.camera.data
+            layout.prop(camera, "lens")
+            if len(camera.background_images) > 0:
+                layout.prop(camera.background_images[0], "alpha")
+                layout.prop(camera.background_images[0], "display_depth")
             layout.separator()
 
 CLASSES = [
