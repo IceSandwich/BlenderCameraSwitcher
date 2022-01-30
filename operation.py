@@ -20,6 +20,11 @@ class ICECameraSwicher_OT_AddRefImage(bpy.types.Operator):
             bg.image = bpy.data.images.load(os.path.join(self.directory, file.name))
 
             cam_obj = bpy.data.objects.new("IceCS", cam)
+
+            # look at front view
+            cam_obj.location[1] = -5
+            cam_obj.rotation_euler[0] = 90
+
             context.scene.collection.objects.link(cam_obj)
 
         return {'FINISHED'}
@@ -50,7 +55,7 @@ class ICECameraSwicher_OT_SwitchTo(bpy.types.Operator):
 
         # Store settings
         if not context.region_data.view_perspective == 'CAMERA':
-            ICECS_DT_data.updateData(context)
+            ICECS_DT_data.updateData(context, autoLock=True)
 
         # Set active camera
         context.scene.camera = cam_obj
@@ -83,8 +88,8 @@ class ICECameraSwicher_OT_Recover(bpy.types.Operator):
             return {'FINISHED'}
 
         isCamera = False
-        for view_perspective in [ x.spaces[0].region_3d.view_perspective for x in context.screen.areas if x.type == 'VIEW_3D' and x.spaces[0].region_3d ]:
-            if view_perspective == 'CAMERA':
+        for x in context.screen.areas:
+            if x.type == 'VIEW_3D' and x.spaces[0].region_3d and x.spaces[0].region_3d.view_perspective == 'CAMERA':
                 isCamera = True
                 break
 
@@ -92,10 +97,10 @@ class ICECameraSwicher_OT_Recover(bpy.types.Operator):
             return {'PASS_THROUGH'}
 
         self.isCamera = isCamera
-        if self.isCamera: # nothing to do in camera mode
+        if isCamera: # nothing to do in camera mode
             return {'PASS_THROUGH'}
 
-        ICECS_DT_data.recoverData(context)
+        ICECS_DT_data.recoverData(context, autoLock=True)
 
         return {'PASS_THROUGH'}
 
