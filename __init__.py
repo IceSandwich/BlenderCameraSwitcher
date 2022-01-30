@@ -33,11 +33,22 @@ bl_info = {
 
 classes = [ *DATA_CLASSES, *OPERATION_CLASSES, *PANEL_CLASSES ]
 
+@bpy.app.handlers.persistent
+def load_post(scene:bpy.types.Scene):
+    scene = bpy.context.scene
+    if hasattr(scene, 'IceCS_data') and scene.IceCS_data is not None:
+        scene.IceCS_data.TimerEnable = scene.IceCS_data.TimerEnable # start timer, invoke update func
+    return False
+
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
         if hasattr(cls, 'setupProperty'):
             cls.setupProperty(True)
+
+    # Don't use it in test mode.
+    # https://blender.stackexchange.com/questions/110454/load-post-handler-is-run-twice
+    bpy.app.handlers.load_post.append(load_post)
 
 def unregister():
     for cls in classes:
