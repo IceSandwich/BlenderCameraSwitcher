@@ -9,7 +9,7 @@ A simple camera switcher addon for blender. Useful when use reference image for 
 2. Go to View3D > Properties > Camera Switcher.
 3. **Turn on`Auto update`**.
 4. Press `Add reference image` to select image for a new camera. Support different resolution of images.
-5. Press camera name under `Camera Manager ` tab to switch camera view.
+5. Press camera name under `Camera Manager` tab to switch camera view.
 
 ## TODO
 
