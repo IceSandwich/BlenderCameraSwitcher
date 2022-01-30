@@ -34,14 +34,11 @@ class ICECS_PT_CameraQuickOperation(bpy.types.Panel):
         layout.prop(context.space_data, "lock_camera", toggle=1, icon="DECORATE_LOCKED")
         layout.separator()
 
-        for view_perspective in [ x.spaces[0].region_3d.view_perspective for x in context.screen.areas if x.type == 'VIEW_3D' and x.spaces[0].region_3d ]:
-            if view_perspective == 'CAMERA':
-                layout.prop(context.scene.camera.data, "lens")
-                layout.prop(context.scene.camera.data.background_images[0], "alpha")
-                layout.prop(context.scene.camera.data.background_images[0], "display_depth")
-                layout.separator()
-                break
-
+        if len([ x.spaces[0].region_3d.view_perspective for x in context.screen.areas if x.type == 'VIEW_3D' and x.spaces[0].region_3d and x.spaces[0].region_3d.view_perspective == 'CAMERA' ]) > 0:
+            layout.prop(context.scene.camera.data, "lens")
+            layout.prop(context.scene.camera.data.background_images[0], "alpha")
+            layout.prop(context.scene.camera.data.background_images[0], "display_depth")
+            layout.separator()
 
 CLASSES = [
     ICECS_PT_CameraManager,
